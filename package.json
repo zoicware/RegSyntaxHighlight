@@ -1,0 +1,45 @@
+{
+  "name": "reg-syntax",
+  "displayName": "Windows Registry (.reg) Syntax",
+  "description": "Accurate syntax highlighting for Windows Registry .reg files",
+  "version": "1.0.0",
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": ["Programming Languages"],
+  "contributes": {
+    "languages": [
+      {
+        "id": "reg",
+        "aliases": ["Windows Registry", "reg"],
+        "extensions": [".reg"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "reg",
+        "scopeName": "source.reg",
+        "path": "./syntaxes/reg.tmLanguage.json"
+      }
+    ],
+    "configurationDefaults": {
+      "editor.tokenColorCustomizations": {
+        "textMateRules": [
+          {
+            "comment": "Value names (\"MyValue\"=, \"3\"=, \"{GUID}\"=) — distinct from string data",
+            "scope": [
+              "variable.other.value-name.reg",
+              "constant.numeric.value-name.reg",
+              "support.type.guid.value-name.reg"
+            ],
+            "settings": {
+              "foreground": "#9CDCFE"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

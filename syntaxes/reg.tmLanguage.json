@@ -1,0 +1,305 @@
+{
+  "name": "Windows Registry",
+  "scopeName": "source.reg",
+  "fileTypes": [
+    "reg"
+  ],
+  "patterns": [
+    {
+      "include": "#header"
+    },
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#hex-continuation"
+    },
+    {
+      "include": "#key"
+    },
+    {
+      "include": "#delete-key"
+    },
+    {
+      "include": "#value"
+    }
+  ],
+  "repository": {
+    "header": {
+      "match": "^(Windows Registry Editor Version \\d+\\.\\d+)$",
+      "captures": {
+        "1": {
+          "name": "keyword.control.header.reg"
+        }
+      }
+    },
+    "comment": {
+      "match": "^\\s*(;.*)$",
+      "captures": {
+        "1": {
+          "name": "comment.line.semicolon.reg"
+        }
+      }
+    },
+    "key": {
+      "match": "^(\\[)(HKEY_LOCAL_MACHINE|HKEY_CURRENT_USER|HKEY_CLASSES_ROOT|HKEY_USERS|HKEY_CURRENT_CONFIG|HKEY_PERFORMANCE_DATA)((?:\\\\[^\\]\\\\]+)*)(\\])$",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.key.begin.reg"
+        },
+        "2": {
+          "name": "entity.name.class.hive.reg"
+        },
+        "3": {
+          "name": "entity.name.section.path.reg"
+        },
+        "4": {
+          "name": "punctuation.definition.key.end.reg"
+        }
+      }
+    },
+    "delete-key": {
+      "match": "^(\\[-)(HKEY_LOCAL_MACHINE|HKEY_CURRENT_USER|HKEY_CLASSES_ROOT|HKEY_USERS|HKEY_CURRENT_CONFIG|HKEY_PERFORMANCE_DATA)((?:\\\\[^\\]\\\\]+)*)(\\])$",
+      "captures": {
+        "1": {
+          "name": "keyword.operator.delete.reg"
+        },
+        "2": {
+          "name": "entity.name.class.hive.reg"
+        },
+        "3": {
+          "name": "entity.name.section.path.reg"
+        },
+        "4": {
+          "name": "punctuation.definition.key.end.reg"
+        }
+      }
+    },
+    "value": {
+      "patterns": [
+        {
+          "include": "#default-value"
+        },
+        {
+          "include": "#numeric-value"
+        },
+        {
+          "include": "#guid-value"
+        },
+        {
+          "include": "#named-value"
+        }
+      ]
+    },
+    "default-value": {
+      "begin": "^(@)(=)",
+      "beginCaptures": {
+        "1": {
+          "name": "variable.language.default.reg"
+        },
+        "2": {
+          "name": "keyword.operator.assignment.reg"
+        }
+      },
+      "end": "(?:(;.*))?$",
+      "endCaptures": {
+        "1": {
+          "name": "comment.line.semicolon.reg"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#data"
+        }
+      ]
+    },
+    "numeric-value": {
+      "comment": "Value name that is purely numeric: \"3\"= \"15\"=",
+      "begin": "^(\")(\\d+)(\")(=)",
+      "beginCaptures": {
+        "1": {
+          "name": "constant.numeric.value-name.reg"
+        },
+        "2": {
+          "name": "constant.numeric.value-name.reg"
+        },
+        "3": {
+          "name": "constant.numeric.value-name.reg"
+        },
+        "4": {
+          "name": "keyword.operator.assignment.reg"
+        }
+      },
+      "end": "(?:(;.*))?$",
+      "endCaptures": {
+        "1": {
+          "name": "comment.line.semicolon.reg"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#data"
+        }
+      ]
+    },
+    "guid-value": {
+      "comment": "Value name that is a GUID: \"{xxxxxxxx-...}\"=",
+      "begin": "^(\")(\\{[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}\\})(\")(=)",
+      "beginCaptures": {
+        "1": {
+          "name": "support.type.guid.value-name.reg"
+        },
+        "2": {
+          "name": "support.type.guid.value-name.reg"
+        },
+        "3": {
+          "name": "support.type.guid.value-name.reg"
+        },
+        "4": {
+          "name": "keyword.operator.assignment.reg"
+        }
+      },
+      "end": "(?:(;.*))?$",
+      "endCaptures": {
+        "1": {
+          "name": "comment.line.semicolon.reg"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#data"
+        }
+      ]
+    },
+    "named-value": {
+      "comment": "Regular string value name: \"MyValue\"=",
+      "begin": "^(\"(?:[^\"\\\\]|\\\\.)*?\")(=|-)",
+      "beginCaptures": {
+        "1": {
+          "name": "variable.other.value-name.reg"
+        },
+        "2": {
+          "name": "keyword.operator.assignment.reg"
+        }
+      },
+      "end": "(?:(;.*))?$",
+      "endCaptures": {
+        "1": {
+          "name": "comment.line.semicolon.reg"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#data"
+        }
+      ]
+    },
+    "data": {
+      "patterns": [
+        {
+          "include": "#data-string"
+        },
+        {
+          "include": "#data-dword"
+        },
+        {
+          "include": "#data-qword"
+        },
+        {
+          "include": "#data-hex"
+        },
+        {
+          "include": "#data-delete"
+        }
+      ]
+    },
+    "data-string": {
+      "name": "string.quoted.double.reg",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "match": "\\\\.",
+          "name": "constant.character.escape.reg"
+        },
+        {
+          "match": "%[^%]+%",
+          "name": "variable.other.environment.reg"
+        }
+      ]
+    },
+    "data-dword": {
+      "match": "(?i)(dword:)([0-9a-fA-F]{8})",
+      "captures": {
+        "1": {
+          "name": "storage.type.dword.reg"
+        },
+        "2": {
+          "name": "constant.numeric.hex.dword.reg"
+        }
+      }
+    },
+    "data-qword": {
+      "match": "(?i)(hex\\(b\\):)([0-9a-fA-F,\\\\\\s]+)",
+      "captures": {
+        "1": {
+          "name": "storage.type.qword.reg"
+        },
+        "2": {
+          "name": "constant.numeric.hex.qword.reg"
+        }
+      }
+    },
+    "data-hex": {
+      "begin": "(?i)(hex(?:\\([0-9a-f]+\\))?:)",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.hex.reg"
+        }
+      },
+      "end": "$",
+      "patterns": [
+        {
+          "match": "[0-9a-fA-F]{2}",
+          "name": "constant.numeric.hex.byte.reg"
+        },
+        {
+          "match": ",",
+          "name": "punctuation.separator.hex.reg"
+        },
+        {
+          "match": "\\\\$",
+          "name": "constant.character.escape.continuation.reg"
+        }
+      ]
+    },
+    "data-delete": {
+      "match": "-$",
+      "name": "keyword.operator.delete.reg"
+    },
+    "hex-continuation": {
+      "comment": "Continuation line for hex data: indented hex bytes after a backslash",
+      "begin": "^([ \t]+)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.whitespace.continuation.reg"
+        }
+      },
+      "end": "$",
+      "patterns": [
+        {
+          "match": "[0-9a-fA-F]{2}",
+          "name": "constant.numeric.hex.byte.reg"
+        },
+        {
+          "match": ",",
+          "name": "punctuation.separator.hex.reg"
+        },
+        {
+          "match": "\\\\$",
+          "name": "constant.character.escape.continuation.reg"
+        }
+      ]
+    }
+  }
+}
