@@ -26,12 +26,6 @@ A VSCode extension providing accurate syntax highlighting for Windows Registry `
 1. Download the `.vsix` from the [Releases](../../releases) page
 2. In VSCode: `Extensions` → `...` → `Install from VSIX...`
 
-### From source
-```bash
-npm install -g @vscode/vsce
-vsce package
-code --install-extension reg-syntax-1.0.0.vsix
-```
 
 ## Example
 
@@ -57,7 +51,3 @@ Windows Registry Editor Version 5.00
 ; Delete a key
 [-HKEY_LOCAL_MACHINE\Software\OldApp]
 ```
-
-## License
-
-MIT
